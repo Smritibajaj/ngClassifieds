@@ -2,10 +2,24 @@
 
     angular
         .module("ngClassifieds")
-        .controller("classifiedsCtrl", function ($scope, $http, classifiedsFactory, $mdSidenav, $mdToast, $mdDialog) {
+        .controller("classifiedsCtrl", function ($http, classifiedsFactory, $mdSidenav, $mdToast, $mdDialog) {
+           
+           var vm= this;
+           vm.openSidebar = openSidebar;
+           vm.closeSidebar = closeSidebar;
+           vm.saveClassified = saveClassified;
+           vm.editClassified = editClassified;
+           vm.saveEdit = saveEdit;
+           vm.deleteClassified = vm.deleteClassified;
+           vm.classifieds;
+           vm.categories;
+           vm.editing;
+           vm.classified;
+
+
             classifiedsFactory.getClassifieds().then(function (classifieds) {
-                $scope.classifieds = classifieds.data;//  $scope.classifieds is an array
-                $scope.categories = getCategories($scope.classifieds);
+                vm.classifieds = classifieds.data;//  vm.classifieds is an array
+                vm.categories = getCategories(vm.classifieds);
             });// factoryname.function.work
 
             var contact = {
@@ -14,50 +28,50 @@
                 email: "simmy@gmail.com"
             }
 
-            //$scope.categories = getCategories($scope.classifieds);
+            //vm.categories = getCategories(vm.classifieds);
 
-            $scope.openSidebar = function () {
+        function openSidebar () {
                 $mdSidenav('left').open();
                 //open function
             }
-            $scope.closeSidebar = function () {
+           function closeSidebar () {
                 $mdSidenav('left').close();
                 //close function
-            }
-            $scope.saveClassified = function (classified) {
+            }/// to get rid of $scope we take it as a function and described it above
+        function saveClassified (classified) {
                 if (classified) {
                 classified.contact = contact;
-                    $scope.classifieds.push(classified);
-                    $scope.classified = {};// empty object feild
-                    $scope.closeSidebar();// close navbar
+                    vm.classifieds.push(classified);
+                    vm.classified = {};// empty object feild
+                    closeSidebar();// close navbar
                     showToast("Classified saved");
                 }
             }
 
-            $scope.editClassified = function (classified) {
-                $scope.editing = true;
-                $scope.openSidebar();
-                $scope.classified = classified;
+        function editClassified (classified) {
+                vm.editing = true;
+                openSidebar();
+                vm.classified = classified;
 
             }
 
-            $scope.saveEdit = function (classified) {
-                $scope.editing = false;
-                $scope.classified = {};
-                $scope.closeSidebar();
+        function saveEdit (classified) {
+                vm.editing = false;
+                vm.classified = {};
+                closeSidebar();
                 showToast("Edited successfully");
             }
 
             // we will do splice to delete from frontend ie screen
-            $scope.deleteClassified = function (event, classified) {
+        function deleteClassified (event, classified) {
                 var confirm = $mdDialog.confirm()
                     .title('Are you sure you want to delete' + classified.title + '?')
                     .ok('yes')
                     .cancel('no')
                     .targetEvent('event');
                 $mdDialog.show(confirm).then(function () {// promise is there by using then
-                    var index = $scope.classifieds.indexOf(classified);
-                    $scope.classifieds.splice(index, 1)
+                    var index = vm.classifieds.indexOf(classified);
+                    vm.classifieds.splice(index, 1)
                 }, function () {
 
                 })
