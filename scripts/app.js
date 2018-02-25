@@ -7,25 +7,22 @@ angular
     .accentPalette('orange');
 
     $stateProvider
-    .state('one',{
-        url: '/stateone',
-        template: '<h1>{{ message }}</h1>',
-        controller: 'stateOneCtrl as stateone'// DEFINE ALIAS
+    .state('classifieds',{
+        url: '/classifieds',
+        templateUrl: 'components/classifieds/classifieds.tpl.html',
+        controller: 'classifiedsCtrl as vm'// DEFINE ALIAS
     })
-    .state('two',{
-        url: '/statetwo',
-        template: '<h1>State two</h1> <md-button ui-sref="two.more">Go to nested State</md-button> <ui-view></ui-view>'
+    .state('classifieds.new',{
+        url: '/new',
+        templateUrl: 'components/classifieds/classifieds.new.tpl.html',
+        controller: 'newclassifiedsCtrl as vm'// DEFINE ALIAS
     })
-    .state('two.more',{
-        url: '/more',
-        template: '<p>State two is deeper</p> '
-    })
-})
-.directive("helloWorld", function(){
-return{
-    template: "<h1> {{message}}</h1>"
-}
-})
-.controller('stateOneCtrl', function(){
-$scope.message="Hey from state one";
-})
+    .state('classifieds.edit',{
+        url: '/edit/:id',
+        templateUrl: 'components/classifieds/classifieds.edit.tpl.html',
+        controller: 'editclassifiedsCtrl as vm',// DEFINE ALIAS
+        params: {
+            classified: null
+        }
+    });
+});

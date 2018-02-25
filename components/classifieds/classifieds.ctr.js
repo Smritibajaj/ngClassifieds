@@ -1,20 +1,22 @@
 (function () {
+    "use strict";
 
     angular
         .module("ngClassifieds")
-        .controller("classifiedsCtrl", function ($http, classifiedsFactory, $mdSidenav, $mdToast, $mdDialog) {
-           
-           var vm= this;
-           vm.openSidebar = openSidebar;
-           vm.closeSidebar = closeSidebar;
-           vm.saveClassified = saveClassified;
-           vm.editClassified = editClassified;
-           vm.saveEdit = saveEdit;
-           vm.deleteClassified = vm.deleteClassified;
-           vm.classifieds;
-           vm.categories;
-           vm.editing;
-           vm.classified;
+        .controller("classifiedsCtrl", function ($scope, $http, $state, classifiedsFactory, $mdSidenav, $mdToast, $mdDialog) {
+
+            var vm = this;
+
+            vm.categories;
+            vm.classified;
+            vm.classifieds;
+            vm.closeSidebar = closeSidebar;
+            vm.deleteClassified = vm.deleteClassified;
+            vm.editing;
+            vm.editClassified = editClassified;
+            vm.openSidebar = openSidebar;
+            vm.saveClassified = saveClassified;
+            vm.saveEdit = saveEdit;
 
 
             classifiedsFactory.getClassifieds().then(function (classifieds) {
@@ -22,25 +24,29 @@
                 vm.categories = getCategories(vm.classifieds);
             });// factoryname.function.work
 
-            var contact = {
-                name: "Simmy Bajaj",
-                phone: "(995) 343 8126",
-                email: "simmy@gmail.com"
-            }
+            $scope.$on('newClassified', function (event, classified) {
+                classifieds.id = vm.classifieds.length + 1;
+                vm.classifieds.push(classified);
+                showToast('classified saved')
+
+            })
+            $scope.$on('editSaved', function (event, message) {
+                showToast(message);
+            })
 
             //vm.categories = getCategories(vm.classifieds);
 
-        function openSidebar () {
-                $mdSidenav('left').open();
+            function openSidebar() {
+                $state.go('classifieds.new')
                 //open function
             }
-           function closeSidebar () {
+            function closeSidebar() {
                 $mdSidenav('left').close();
                 //close function
             }/// to get rid of $scope we take it as a function and described it above
-        function saveClassified (classified) {
+            function saveClassified(classified) {
                 if (classified) {
-                classified.contact = contact;
+                    classified.contact = contact;
                     vm.classifieds.push(classified);
                     vm.classified = {};// empty object feild
                     closeSidebar();// close navbar
@@ -48,14 +54,14 @@
                 }
             }
 
-        function editClassified (classified) {
-                vm.editing = true;
-                openSidebar();
-                vm.classified = classified;
-
+            function editClassified(classified) {
+                $state.go('classifieds.edit', {
+                    id: classified.id,
+                    classified: classified
+                })
             }
 
-        function saveEdit (classified) {
+            function saveEdit(classified) {
                 vm.editing = false;
                 vm.classified = {};
                 closeSidebar();
@@ -63,7 +69,7 @@
             }
 
             // we will do splice to delete from frontend ie screen
-        function deleteClassified (event, classified) {
+            function deleteClassified(event, classified) {
                 var confirm = $mdDialog.confirm()
                     .title('Are you sure you want to delete' + classified.title + '?')
                     .ok('yes')
