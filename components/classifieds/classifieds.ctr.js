@@ -23,16 +23,17 @@
                 vm.classifieds = classifieds.data;//  vm.classifieds is an array
                 vm.categories = getCategories(vm.classifieds);
             });// factoryname.function.work
-
+//$on is a conjuction which is a event listner which is listening event from new classified controller
             $scope.$on('newClassified', function (event, classified) {
-                classifieds.id = vm.classifieds.length + 1;
+                classified.id = vm.classifieds.length + 1;// HERE WE ADD CLASSIFIED.ID AND CHECK THE LENGTH OF ARRAY AND ADDING 1 TO IT
                 vm.classifieds.push(classified);
-                showToast('classified saved')
+                showToast('classified saved!');
 
-            })
+            });
+
             $scope.$on('editSaved', function (event, message) {
                 showToast(message);
-            })
+            });
 
             //vm.categories = getCategories(vm.classifieds);
 
@@ -57,8 +58,8 @@
             function editClassified(classified) {
                 $state.go('classifieds.edit', {
                     id: classified.id,
-                    classified: classified
-                })
+                    classified: classified //WE WANT TO PASS CLASSIFOED INTO ABOVE CLASSIFIED OBJECT
+                });
             }
 
             function saveEdit(classified) {
